@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 
 // 📦 Obtener todos los productos
 export const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find().populate("shop");
+  const products = await Product.find().populate("place");
   res.json(products);
 });
 
@@ -20,8 +20,8 @@ export const getProductById = asyncHandler(async (req, res) => {
 
 // ➕ Crear nuevo producto
 export const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, price, shop } = req.body;
-  const product = await Product.create({ name, description, price, shop });
+  const { name, description, price, place } = req.body;
+  const product = await Product.create({ name, description, price, place });
   res.status(201).json(product);
 });
 

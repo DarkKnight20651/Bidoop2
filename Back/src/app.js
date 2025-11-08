@@ -1,12 +1,15 @@
+// app.js
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
+import path from 'path';
+
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 import userRoutes from './routes/userRoutes.js';
-import placeRoutes from './routes/placeRoutes.js';
+import placeRoutes from './routes/placeRoutes.js'; // 👈 OJO: ./routes..., no .src
 import eventRoutes from './routes/eventRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
@@ -19,12 +22,12 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
 // servir uploads
-import path from 'path';
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // rutas

@@ -11,12 +11,15 @@ import {
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-
 router.post('/', protect, adminOnly, createPlace);
+
+// PON /nearby ANTES DE /:id
+router.get('/nearby', getNearbyPlaces); // /api/places/nearby?lng=-?&lat=?&radius=5000
+
 router.put('/:id', protect, adminOnly, updatePlace);
 router.get('/:id', getPlace);
 router.delete('/:id', protect, adminOnly, deletePlace);
-router.get('/nearby', getNearbyPlaces); // /api/places/nearby?lng=-?&lat=?&radius=5000
-router.post('/add-product', protect, adminOnly, addProductToPlace);
+
+router.post('/add-product', addProductToPlace);
 
 export default router;
