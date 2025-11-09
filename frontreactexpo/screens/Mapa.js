@@ -1,6 +1,7 @@
 // src/screens/MapScreen.js
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Mapbox from '@rnmapbox/maps';
 
 Mapbox.setAccessToken(
@@ -35,33 +36,31 @@ const MapScreen = () => {
   }, []);
 
   // Llamar al backend
- const fetchNearby = async (lng, lat) => {
-  try {
-    const params = new URLSearchParams({
-      lng: lng.toString(),
-      lat: lat.toString(),
-      radius: '5000'
-    });
+  const fetchNearby = async (lng, lat) => {
+    try {
+      const params = new URLSearchParams({
+        lng: lng.toString(),
+        lat: lat.toString(),
+        radius: '5000',
+      });
 
-    const res = await fetch(`http://192.168.7.190:5000/api/places/nearby?${params}`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+      const res = await fetch(`http://192.168.7.190:5000/api/places/nearby?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
+      if (!res.ok) {
+        throw new Error(`Error HTTP: ${res.status}`);
+      }
 
-    if (!res.ok) {
-      throw new Error(`Error HTTP: ${res.status}`);
+      const data = await res.json();
+      setPlaces(Array.isArray(data) ? data : data.places || []);
+    } catch (error) {
+      console.error('Error obteniendo lugares:', error);
     }
-
-    const data = await res.json();
-    // Si tu backend devuelve directamente un array:
-    setPlaces(Array.isArray(data) ? data : data.places || []);
-  } catch (error) {
-    console.error('Error obteniendo lugares:', error);
-  }
-};
+  };
 
   // Crear formas 3D para lugares
   const render3DShapes = () =>
@@ -139,24 +138,20 @@ const MapScreen = () => {
 
   if (!userLocation) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#00BCD4" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.page}>
+    <SafeAreaView style={styles.page}>
       <Mapbox.MapView style={styles.map} styleURL={Mapbox.StyleURL.Street}>
         <Mapbox.Camera zoomLevel={14} centerCoordinate={userLocation} pitch={60} />
-
-        {/* Marcador del usuario */}
         <Mapbox.PointAnnotation id="user" coordinate={userLocation} />
-
-        {/* Lugares en 3D */}
         {render3DShapes()}
       </Mapbox.MapView>
-    </View>
+    </SafeAreaView>
   );
 };
 
