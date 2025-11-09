@@ -11,7 +11,7 @@ import {
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-router.post('/', protect, adminOnly, createPlace);
+router.post('/',  createPlace);
 
 // PON /nearby ANTES DE /:id
 router.get('/nearby', getNearbyPlaces); // /api/places/nearby?lng=-?&lat=?&radius=5000
