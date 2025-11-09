@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
-
+import cartRoutes from './routes/cartRoutes.js';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import paymentRoutes from './routes/paymentRoutes.js';
@@ -41,6 +41,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/routes', routeRoutes);
 app.use('/api/ranking', rankingRoutes);
+app.use('/api/cart', cartRoutes);
 
 // error handler
 app.use(errorHandler);

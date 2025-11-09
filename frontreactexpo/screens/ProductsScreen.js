@@ -12,30 +12,54 @@ import {
 } from 'react-native';
 import api from '../api/client';
 import { Ionicons } from '@expo/vector-icons';
-
-
+import {  useFocusEffect } from '@react-navigation/native';
 export default function ProductsScreen({ navigation, session }) {
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+useFocusEffect(
+        React.useCallback(() => {
+            const fetchProducts = async () => {
+                try {
+                    setLoading(true);
+                    setError(null);
 
+                    const response = await api.get('/products' /* o la ruta que tengas */, {
+                        // Si tu endpoint necesita token, descomenta esto y ajusta:
+                        // headers: session?.token
+                        //   ? { Authorization: Bearer ${session.token} }
+                        //   : undefined,
+                    });
+
+                    // Ajusta "response.data" si tu API envuelve datos en { products: [...] }
+                    setProducts(response.data);
+                } catch (err) {
+                    console.log('Error al cargar productos:', err);
+                    setError('No pudimos cargar los productos.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchProducts();
+
+            // Retorno opcional para limpieza (no hace falta aquí)
+            return () => {};
+        }, [session]) // Dependencia: si session cambia, también se recarga
+    );
+  // Obtener productos desde el backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await api.get('/products' /* o la ruta que tengas */, {
-          // Si tu endpoint necesita token, descomenta esto y ajusta:
-          // headers: session?.token
-          //   ? { Authorization: `Bearer ${session.token}` }
-          //   : undefined,
-        });
+        const response = await api.get('/products');
 
-        // Asumo que el backend responde con un array de productos
-        // Ajusta "response.data" si tu API envuelve datos en { products: [...] }
+        // Si tu backend devuelve { products: [...] } cambia esto:
+        // setProducts(response.data.products);
         setProducts(response.data);
+
       } catch (err) {
         console.log('Error al cargar productos:', err);
         setError('No pudimos cargar los productos.');
@@ -47,24 +71,63 @@ export default function ProductsScreen({ navigation, session }) {
     fetchProducts();
   }, [session]);
 
-const renderProduct = ({ item }) => {
-  return (
-    <View style={styles.card}>
-      {item.url ? (
-        <Image source={{ uri: item.url }} style={styles.image} />
-      ) : (
-        <View style={[styles.image, styles.imagePlaceholder]}>
-          <Text style={styles.imagePlaceholderText}>Sin imagen</Text>
-        </View>
-      )}
+  // ✅ Agregar producto al carrito
+  // ✅ Agregar producto al carrito
+const addToCart = async (productId) => {
+  console.log("📌 ID ENVIADO AL BACKEND:", productId);
 
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productPrice}>${item.price}</Text>
-    </View>
-  );
+  if (!productId) {
+    alert("Error: producto sin ID ❌");
+    return;
+  }
+
+  try {
+    const res = await api.post('/cart/items', {
+      productId,
+      quantity: 1,
+    });
+
+    console.log("✅ RESPUESTA DEL BACKEND:", res.data);
+
+    alert("Producto agregado al carrito ✅");
+
+  } catch (error) {
+    console.log("🚨 ERROR COMPLETO:", error?.response?.data || error);
+
+    alert("No se pudo agregar al carrito ❌");
+  }
 };
 
 
+  // ✅ Renderiza cada card de producto
+  const renderProduct = ({ item }) => {
+    const productId = item._id || item.id; // ✅ FIX
+
+    return (
+      <View style={styles.card}>
+        {item.url ? (
+          <Image source={{ uri: item.url }} style={styles.image} />
+        ) : (
+          <View style={[styles.image, styles.imagePlaceholder]}>
+            <Text style={styles.imagePlaceholderText}>Sin imagen</Text>
+          </View>
+        )}
+
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>${item.price}</Text>
+
+        <TouchableOpacity
+          style={styles.btnAdd}
+          onPress={() => addToCart(productId)}
+        >
+          <Text style={styles.btnAddText}>Agregar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+
+  // ✅ Loading UI
   if (loading) {
     return (
       <View style={styles.center}>
@@ -74,6 +137,7 @@ const renderProduct = ({ item }) => {
     );
   }
 
+  // ✅ Error UI
   if (error) {
     return (
       <View style={styles.center}>
@@ -84,14 +148,14 @@ const renderProduct = ({ item }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header parecido al de tu mockup */}
+      {/* Header */}
       <Text style={styles.subtitle}>Colores de</Text>
       <Text style={styles.title}>Alebrije Fantástico</Text>
 
-      {/* Lista de productos en 2 columnas */}
+      {/* Lista de productos */}
       <FlatList
         data={products}
-        keyExtractor={(item) => String(item.id || item._id)}
+        keyExtractor={(item) => String(item._id || item.id)}
         renderItem={renderProduct}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -99,21 +163,23 @@ const renderProduct = ({ item }) => {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Botón "Añadir al Carrito" general (luego lo conectamos de verdad) */}
+      {/* Botón ADD TO CART general (opcional) */}
       <TouchableOpacity style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Añadir al Carrito</Text>
       </TouchableOpacity>
-       {/* NUEVO: botón flotante para ir a CrearProducto */}
-    <TouchableOpacity
-      style={styles.fab}
-      onPress={() => navigation.navigate('CrearProducto')}
-    >
-      <Ionicons name="add" size={28} color="#fff" />
-    </TouchableOpacity>
+
+      {/* FAB para crear productos */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('CrearProducto')}
+      >
+        <Ionicons name="add" size={28} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
 
+// ✅ ESTILOS COMPLETOS
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,21 +189,21 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   fab: {
-  position: 'absolute',
-  right: 16,
-  bottom: 80, // ajústalo para que no se tape con el botón del carrito
-  width: 56,
-  height: 56,
-  borderRadius: 28,
-  backgroundColor: '#FF007A',
-  justifyContent: 'center',
-  alignItems: 'center',
-  elevation: 6,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.3,
-  shadowRadius: 4,
-},
+    position: 'absolute',
+    right: 16,
+    bottom: 80,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FF007A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
   center: {
     flex: 1,
     backgroundColor: '#1E1E2F',
@@ -158,7 +224,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   listContent: {
-    paddingBottom: 80, // espacio para el botón
+    paddingBottom: 80,
   },
   card: {
     backgroundColor: '#F7F7F7',
@@ -198,6 +264,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FF8A00',
   },
+  btnAdd: {
+    marginTop: 10,
+    backgroundColor: '#FF007A',
+    paddingVertical: 8,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  btnAddText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   addToCartButton: {
     position: 'absolute',
     bottom: 16,
@@ -206,10 +283,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 999,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
     elevation: 4,
   },
   addToCartText: {
