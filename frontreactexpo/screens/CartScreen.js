@@ -121,7 +121,7 @@ export default function CartScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1E1E2F',
+    backgroundColor: '#ffffffff',
   },
   container: {
     flexGrow: 1,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#111111ff',
     marginBottom: 20,
   },
   emptyText: {
@@ -141,13 +141,13 @@ const styles = StyleSheet.create({
 
   cartItem: {
     borderBottomWidth: 1,
-    borderBottomColor: '#3A3A5A',
+    borderBottomColor: '#072d54ff',
     paddingVertical: 14,
   },
 
   itemName: {
     fontSize: 18,
-    color: '#fff',
+    color: '#0b073fff',
     fontWeight: '600',
     marginBottom: 5,
   },
@@ -160,19 +160,19 @@ const styles = StyleSheet.create({
 
   qtyBtn: {
     fontSize: 22,
-    color: '#fff',
+    color: '#1c4ca0ff',
     paddingHorizontal: 10,
   },
 
   qty: {
     fontSize: 18,
-    color: '#fff',
+    color: '#13b93aff',
     marginHorizontal: 8,
   },
 
   itemPrice: {
     fontSize: 18,
-    color: '#FFFFFF',
+    color: '#2f078bff',
     fontWeight: 'bold',
     marginTop: 5,
   },

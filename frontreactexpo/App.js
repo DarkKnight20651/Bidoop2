@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ProductsScreen from './screens/ProductsScreen';
+import HomeScreen from './screens/HomeScreen';
 import CreateProductScreen from './screens/CreateScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // 👈 nuevo
 // --- NUESTRA NUEVA IMPORTACIÓN ---
@@ -24,13 +25,7 @@ const Tab = createBottomTabNavigator();
 const ProductStack = createNativeStackNavigator();
 
 // --- PANTALLAS PLACEHOLDER (Tal como las tenías) ---
-function HomeScreen() {
-  return (
-    <SafeAreaView style={styles.screen}>
-      <Text style={styles.screenText}>Aquí es Inicio</Text>
-    </SafeAreaView>
-  );
-}
+
 
 
 // --- FIN DE PANTALLAS PLACEHOLDER ---
@@ -59,11 +54,11 @@ function MainTabs() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1E1E2F',
-          borderTopColor: '#3A3A5A',
+          backgroundColor: '#8030b9ff',
+          borderTopColor: '#9650ccff',
         },
         tabBarActiveTintColor: '#FFFFFF',
-        tabBarInactiveTintColor: '#8888AA',
+        tabBarInactiveTintColor: '#cacae7ff',
         tabBarLabelStyle: {
           fontSize: 11,
         },

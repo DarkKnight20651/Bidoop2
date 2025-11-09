@@ -1,5 +1,5 @@
 // esta IP por la de tu computadora en la red local
-const LOCAL_IP = '192.168.5.146'; 
+const LOCAL_IP = '192.168.38.182'; 
 
 export const API_URL =
   __DEV__

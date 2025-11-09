@@ -162,12 +162,6 @@ const addToCart = async (productId) => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
-
-      {/* Botón ADD TO CART general (opcional) */}
-      <TouchableOpacity style={styles.addToCartButton}>
-        <Text style={styles.addToCartText}>Añadir al Carrito</Text>
-      </TouchableOpacity>
-
       {/* FAB para crear productos */}
       <TouchableOpacity
         style={styles.fab}
