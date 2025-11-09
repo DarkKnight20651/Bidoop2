@@ -13,6 +13,8 @@ import {
   Alert,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // Cambia esta URL si tu backend está en otra IP/puerto
 const API_URL = 'http://192.168.5.146:5000';
 
@@ -24,10 +26,7 @@ export default function LoginScreen({ onLoginSuccess }) {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert(
-        'Campos incompletos',
-        'Por favor ingresa tu correo y contraseña.'
-      );
+      Alert.alert('Campos incompletos', 'Por favor ingresa tu correo y contraseña.');
       return;
     }
 
@@ -43,20 +42,21 @@ export default function LoginScreen({ onLoginSuccess }) {
       const data = await response.json();
 
       if (!response.ok) {
-        // error de credenciales / backend
-        Alert.alert(
-          'Error de acceso',
-          data.message || 'Correo o contraseña incorrectos.'
-        );
+        Alert.alert('Error de acceso', data.message || 'Correo o contraseña incorrectos.');
         return;
       }
 
-      // Login correcto
+      // ✅ GUARDAR EL TOKEN PARA QUE LO USE client.js
+      await AsyncStorage.setItem("token", data.token);
+      console.log("✅ TOKEN GUARDADO:", data.token);
+
       Alert.alert('¡Bienvenida!', data.name || 'Inicio de sesión correcto.');
 
+      // ✅ Ahora sí, avisamos al App.js que el login fue exitoso
       if (onLoginSuccess) {
-        onLoginSuccess(data); // avisamos al App que se logueó bien
+        onLoginSuccess(data);
       }
+
     } catch (error) {
       console.log(error);
       Alert.alert(
@@ -95,7 +95,7 @@ export default function LoginScreen({ onLoginSuccess }) {
               />
             </View>
 
-            {/* Password + Ver/Ocultar */}
+            {/* Password */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Contraseña</Text>
               <View style={styles.passwordRow}>
@@ -130,6 +130,7 @@ export default function LoginScreen({ onLoginSuccess }) {
                 <Text style={styles.buttonText}>Entrar</Text>
               )}
             </TouchableOpacity>
+
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -140,7 +141,7 @@ export default function LoginScreen({ onLoginSuccess }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1E1E2F', // fondo oscuro como tu app
+    backgroundColor: '#1E1E2F',
   },
   container: {
     flex: 1,
