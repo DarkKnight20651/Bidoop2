@@ -16,7 +16,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Cambia esta URL si tu backend está en otra IP/puerto
-const API_URL = 'http://192.168.5.146:5000';
+const API_URL = 'http://192.168.7.190:5000';
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
