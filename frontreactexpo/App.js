@@ -4,12 +4,14 @@ import {
   StyleSheet,
   View,
   Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
-// Importaciones de tus pantallas
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ProductsScreen from './screens/ProductsScreen';
@@ -90,11 +92,8 @@ function MainTabs() {
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
       <Tab.Screen name="Mapa" component={MapScreen} />
-      
-      {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
-      {/* Ya no es 'CartScreen', ahora es el 'CartNavigator' */}
+      <Tab.Screen name="Productos" component={ProductsStack} />
       <Tab.Screen name="Carrito" component={CartNavigator} /> 
-      {/* --- FIN DEL CAMBIO --- */}
 
       <Tab.Screen name="Perfil" component={ProfileScreen} />
     </Tab.Navigator>
