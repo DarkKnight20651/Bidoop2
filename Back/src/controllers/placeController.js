@@ -67,22 +67,31 @@ export const deletePlace = asyncHandler(async (req, res) => {
 // Nearby places search (radius in meters)
 export const getNearbyPlaces = asyncHandler(async (req, res) => {
   const { lng, lat, radius = 5000, category, limit = 20 } = req.query;
+
   if (!lng || !lat) {
     res.status(400);
     throw new Error('lng y lat son requeridos');
   }
+
+  // ✅ usa "location" (el campo con el índice 2dsphere)
   const filter = {
-    coordinates: {
+    location: {
       $nearSphere: {
-        $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
-        $maxDistance: parseInt(radius, 10)
-      }
-    }
+        $geometry: {
+          type: 'Point',
+          coordinates: [parseFloat(lng), parseFloat(lat)],
+        },
+        $maxDistance: parseInt(radius, 10),
+      },
+    },
   };
+
   if (category) filter.category = category;
+
   const places = await Place.find(filter).limit(parseInt(limit, 10));
   res.json(places);
 });
+
 
 // Add product reference to place (helper)
 export const addProductToPlace = asyncHandler(async (req, res) => {

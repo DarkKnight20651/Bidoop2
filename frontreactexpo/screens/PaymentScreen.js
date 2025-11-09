@@ -12,7 +12,11 @@ import {
 
 // --- CONFIGURACIÓN CRÍTICA ---
 // Aquí puedes poner tu IP directamente
+<<<<<<< HEAD
 const YOUR_SERVER_API_URL = 'http://192.168.38.182:5000'; // <-- ¡PON TU IP AQUÍ!
+=======
+const YOUR_SERVER_API_URL = 'http://192.168.36.201:5000'; // <-- ¡PON TU IP AQUÍ!
+>>>>>>> bf978acccd7155e767c5a927d26fd53491f865ba
 // --- FIN DE LA CONFIGURACIÓN ---
 
 function PaymentScreen({ route, navigation }) {
