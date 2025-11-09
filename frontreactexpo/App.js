@@ -8,17 +8,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  Dimensions,
 } from 'react-native';
+import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 // --- CONFIGURACIÓN CRÍTICA ---
-// 1. Reemplaza esta IP con la IP de tu computadora (del Paso 2).
-// 2. Asegúrate de que el puerto sea 5000 (donde corre tu backend).
-const YOUR_SERVER_API_URL = 'http://192.168.38.236:5000'; 
+const YOUR_SERVER_API_URL = 'http://192.168.5.208:5000';
 // --- FIN DE LA CONFIGURACIÓN ---
 
-
-export default function App() {
+// 👉 Esta es tu pantalla de pagos, la extraemos a un componente aparte:
+function PaymentScreen() {
   const [amount, setAmount] = useState('3000');
   const [receiverUrl, setReceiverUrl] = useState('https://ilp.interledger-test.dev/compradoradrian');
   const [loading, setLoading] = useState(false);
@@ -34,11 +33,9 @@ export default function App() {
     setMessage(null);
 
     try {
-      // Esta es la URL completa de tu API
       const apiUrl = `${YOUR_SERVER_API_URL}/api/payments/create`;
-      console.log("Intentando llamar a:", apiUrl);
+      console.log('Intentando llamar a:', apiUrl);
 
-      // Esta API espera: { receiverWalletUrl: "...", amount: "..." }
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -62,8 +59,6 @@ export default function App() {
       }
     } catch (error) {
       console.error(error);
-      // El error 'Network request failed' casi siempre significa
-      // que la IP es incorrecta o el backend no está corriendo.
       setMessage(`Error: ${error.message}`);
     } finally {
       setLoading(false);
@@ -100,13 +95,13 @@ export default function App() {
         </View>
 
         {message && (
-          <View style={[
-            styles.messageContainer,
-            message.startsWith('Error') ? styles.errorBg : styles.successBg
-          ]}>
-            <Text style={styles.messageText}>
-              {message}
-            </Text>
+          <View
+            style={[
+              styles.messageContainer,
+              message.startsWith('Error') ? styles.errorBg : styles.successBg,
+            ]}
+          >
+            <Text style={styles.messageText}>{message}</Text>
           </View>
         )}
 
@@ -124,10 +119,29 @@ export default function App() {
   );
 }
 
+// 👉 ESTE es ahora tu componente principal
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 👇 Mientras no esté logueado, mostrar LoginScreen
+  if (!isLoggedIn) {
+    return (
+      <LoginScreen
+        onLoginSuccess={() => {
+          setIsLoggedIn(true);
+        }}
+      />
+    );
+  }
+
+  // 👇 Cuando se loguee, mostrar pantalla de pagos
+  return <PaymentScreen />;
+}
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1E1E2F', // Fondo oscuro
+    backgroundColor: '#1E1E2F',
   },
   container: {
     flexGrow: 1,
@@ -169,15 +183,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    backgroundColor: '#007AFF', // Azul vibrante
+    backgroundColor: '#007AFF',
     padding: 18,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
@@ -197,7 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: 'white',
-    fontWeight: '600'
+    fontWeight: '600',
   },
   successBg: {
     backgroundColor: 'rgba(0, 200, 100, 0.3)',
