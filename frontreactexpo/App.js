@@ -9,115 +9,93 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
+const Tab = createBottomTabNavigator();
 
 // --- CONFIGURACIÓN CRÍTICA ---
 const YOUR_SERVER_API_URL = 'http://192.168.5.208:5000';
 // --- FIN DE LA CONFIGURACIÓN ---
 
-// 👉 Esta es tu pantalla de pagos, la extraemos a un componente aparte:
-function PaymentScreen() {
-  const [amount, setAmount] = useState('3000');
-  const [receiverUrl, setReceiverUrl] = useState('https://ilp.interledger-test.dev/compradoradrian');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
-
-  const handlePayment = async () => {
-    if (!receiverUrl || !amount) {
-      setMessage('Error: Por favor, ingresa la URL y el monto.');
-      return;
-    }
-
-    setLoading(true);
-    setMessage(null);
-
-    try {
-      const apiUrl = `${YOUR_SERVER_API_URL}/api/payments/create`;
-      console.log('Intentando llamar a:', apiUrl);
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          receiverWalletUrl: receiverUrl,
-          amount: amount,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        console.log('Pago exitoso:', result.payment);
-        setMessage(
-          `¡Pago exitoso!\nID: ${result.payment.id}\nMonto enviado: ${result.payment.debitAmount.value}`
-        );
-      } else {
-        throw new Error(result.error || 'Ocurrió un error en el servidor.');
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage(`Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+function HomeScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>BIDOOP</Text>
-        <Text style={styles.subtitle}>Demo de Pago Interledger</Text>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Enviar a (Billetera Receptora)</Text>
-          <TextInput
-            style={styles.input}
-            value={receiverUrl}
-            onChangeText={setReceiverUrl}
-            placeholder="https://wallet.example.com/usuario"
-            autoCapitalize="none"
-            keyboardType="url"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Monto (unidad mínima)</Text>
-          <TextInput
-            style={styles.input}
-            value={amount}
-            onChangeText={setAmount}
-            placeholder="3000"
-            keyboardType="numeric"
-          />
-        </View>
-
-        {message && (
-          <View
-            style={[
-              styles.messageContainer,
-              message.startsWith('Error') ? styles.errorBg : styles.successBg,
-            ]}
-          >
-            <Text style={styles.messageText}>{message}</Text>
-          </View>
-        )}
-
-        <View style={styles.buttonContainer}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#ffffff" />
-          ) : (
-            <TouchableOpacity style={styles.button} onPress={handlePayment}>
-              <Text style={styles.buttonText}>Pagar con Interledger</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.screen}>
+      <Text style={styles.screenText}>Aquí es Inicio</Text>
     </SafeAreaView>
   );
 }
+
+function ProductsScreen() {
+  return (
+    <SafeAreaView style={styles.screen}>
+      <Text style={styles.screenText}>Aquí es Productos</Text>
+    </SafeAreaView>
+  );
+}
+
+function MapScreen() {
+  return (
+    <SafeAreaView style={styles.screen}>
+      <Text style={styles.screenText}>Aquí es Mapa</Text>
+    </SafeAreaView>
+  );
+}
+
+function CartScreen() {
+  return (
+    <SafeAreaView style={styles.screen}>
+      <Text style={styles.screenText}>Aquí es Carrito</Text>
+    </SafeAreaView>
+  );
+}
+
+
+
+function MainTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({ // 👈 screenOptions DEBE ser una función
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: '#1E1E2F',
+          borderTopColor: '#3A3A5A',
+        },
+        tabBarActiveTintColor: '#FFFFFF',
+        tabBarInactiveTintColor: '#8888AA',
+        tabBarLabelStyle: {
+          fontSize: 11,
+        },
+        // 👇 LÓGICA DEL ICONO
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Inicio') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Productos') {
+            iconName = focused ? 'grid' : 'grid-outline';
+          } else if (route.name === 'Mapa') {
+            iconName = focused ? 'map' : 'map-outline';
+          } else if (route.name === 'Carrito') {
+            iconName = focused ? 'cart' : 'cart-outline';
+          } else if (route.name === 'Perfil') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Inicio" component={HomeScreen} />
+      <Tab.Screen name="Productos" component={ProductsScreen} />
+      <Tab.Screen name="Mapa" component={MapScreen} />
+      <Tab.Screen name="Carrito" component={CartScreen} />
+      <Tab.Screen name="Perfil" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+
+
 
 // 👉 ESTE es ahora tu componente principal
 export default function App() {
@@ -135,8 +113,12 @@ export default function App() {
   }
 
   // 👇 Cuando se loguee, mostrar pantalla de pagos
-  return <PaymentScreen />;
-}
+return (
+  <NavigationContainer>
+    <MainTabs />
+  </NavigationContainer>
+);
+  }
 
 const styles = StyleSheet.create({
   safeArea: {
