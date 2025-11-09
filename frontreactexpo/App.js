@@ -19,7 +19,7 @@ import ProductsScreen from './screens/ProductsScreen';
 const Tab = createBottomTabNavigator();
 
 // --- CONFIGURACIÓN CRÍTICA ---
-const YOUR_SERVER_API_URL = 'http://192.168.5.208:5000';
+const YOUR_SERVER_API_URL = 'http://192.168.5.146:5000';
 // --- FIN DE LA CONFIGURACIÓN ---
 
 function HomeScreen() {
