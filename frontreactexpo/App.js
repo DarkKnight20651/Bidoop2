@@ -14,6 +14,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import ProductsScreen from './screens/ProductsScreen';
+
 const Tab = createBottomTabNavigator();
 
 // --- CONFIGURACIÓN CRÍTICA ---
@@ -24,14 +26,6 @@ function HomeScreen() {
   return (
     <SafeAreaView style={styles.screen}>
       <Text style={styles.screenText}>Aquí es Inicio</Text>
-    </SafeAreaView>
-  );
-}
-
-function ProductsScreen() {
-  return (
-    <SafeAreaView style={styles.screen}>
-      <Text style={styles.screenText}>Aquí es Productos</Text>
     </SafeAreaView>
   );
 }
