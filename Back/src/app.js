@@ -7,7 +7,7 @@ import path from 'path';
 
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-
+import paymentRoutes from './routes/paymentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import placeRoutes from './routes/placeRoutes.js'; // 👈 OJO: ./routes..., no .src
 import eventRoutes from './routes/eventRoutes.js';
@@ -31,6 +31,7 @@ if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // rutas
+app.use('/api/payments', paymentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/places', placeRoutes);
 app.use('/api/events', eventRoutes);
