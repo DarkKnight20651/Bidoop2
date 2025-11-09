@@ -51,7 +51,7 @@ export default function CartScreen({ navigation }) {
 
   // Navegar a la pantalla de pago
   const handlePaymentPress = () => {
-    navigation.navigate("Payment", {
+    navigation.navigate("PaymentScreen", {
       totalAmount: total.toString(),
     });
   };
