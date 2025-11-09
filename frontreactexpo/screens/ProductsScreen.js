@@ -1,4 +1,5 @@
 // screens/ProductsScreen.js
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -10,7 +11,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import api from '../api/client';
-export default function ProductsScreen({ session }) {
+import { Ionicons } from '@expo/vector-icons';
+
+
+export default function ProductsScreen({ navigation, session }) {
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,24 +47,23 @@ export default function ProductsScreen({ session }) {
     fetchProducts();
   }, [session]);
 
-  const renderProduct = ({ item }) => {
-    return (
-      <View style={styles.card}>
-        {/* Ajusta "item.imageUrl" al nombre real de la propiedad en tu API */}
-        {item.imageUrl ? (
-          <Image source={{ uri: item.imageUrl }} style={styles.image} />
-        ) : (
-          <View style={[styles.image, styles.imagePlaceholder]}>
-            <Text style={styles.imagePlaceholderText}>Sin imagen</Text>
-          </View>
-        )}
+const renderProduct = ({ item }) => {
+  return (
+    <View style={styles.card}>
+      {item.url ? (
+        <Image source={{ uri: item.url }} style={styles.image} />
+      ) : (
+        <View style={[styles.image, styles.imagePlaceholder]}>
+          <Text style={styles.imagePlaceholderText}>Sin imagen</Text>
+        </View>
+      )}
 
-        {/* Ajusta "item.name" y "item.price" a tus campos reales */}
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>${item.price}</Text>
-      </View>
-    );
-  };
+      <Text style={styles.productName}>{item.name}</Text>
+      <Text style={styles.productPrice}>${item.price}</Text>
+    </View>
+  );
+};
+
 
   if (loading) {
     return (
@@ -99,6 +103,13 @@ export default function ProductsScreen({ session }) {
       <TouchableOpacity style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Añadir al Carrito</Text>
       </TouchableOpacity>
+       {/* NUEVO: botón flotante para ir a CrearProducto */}
+    <TouchableOpacity
+      style={styles.fab}
+      onPress={() => navigation.navigate('CrearProducto')}
+    >
+      <Ionicons name="add" size={28} color="#fff" />
+    </TouchableOpacity>
     </View>
   );
 }
@@ -111,6 +122,22 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 12,
   },
+  fab: {
+  position: 'absolute',
+  right: 16,
+  bottom: 80, // ajústalo para que no se tape con el botón del carrito
+  width: 56,
+  height: 56,
+  borderRadius: 28,
+  backgroundColor: '#FF007A',
+  justifyContent: 'center',
+  alignItems: 'center',
+  elevation: 6,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.3,
+  shadowRadius: 4,
+},
   center: {
     flex: 1,
     backgroundColor: '#1E1E2F',

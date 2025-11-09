@@ -15,8 +15,11 @@ import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from './screens/LoginScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ProductsScreen from './screens/ProductsScreen';
+import CreateProductScreen from './screens/CreateScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; // 👈 nuevo
 
 const Tab = createBottomTabNavigator();
+const ProductStack = createNativeStackNavigator();
 
 // --- CONFIGURACIÓN CRÍTICA ---
 const YOUR_SERVER_API_URL = 'http://192.168.5.208:5000';
@@ -47,7 +50,22 @@ function CartScreen() {
 }
 
 
-
+function ProductsStack() {
+  return (
+    <ProductStack.Navigator>
+      <ProductStack.Screen
+        name="Catalogo"
+        component={ProductsScreen}
+        options={{ title: 'Productos' }}
+      />
+      <ProductStack.Screen
+        name="CrearProducto"
+        component={CreateProductScreen}
+        options={{ title: 'Crear producto' }}
+      />
+    </ProductStack.Navigator>
+  );
+}
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -81,7 +99,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Productos" component={ProductsScreen} />
+      <Tab.Screen name="Productos" component={ProductsStack} />
       <Tab.Screen name="Mapa" component={MapScreen} />
       <Tab.Screen name="Carrito" component={CartScreen} />
       <Tab.Screen name="Perfil" component={ProfileScreen} />
