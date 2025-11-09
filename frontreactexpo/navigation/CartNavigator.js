@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Importamos las pantallas que creamos
-import CartScreen from '../screens/cartScreen';
+import CartScreen from '../screens/CartScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 
 const Stack = createNativeStackNavigator();

@@ -17,7 +17,7 @@ import CreateProductScreen from './screens/CreateScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // 👈 nuevo
 // --- NUESTRA NUEVA IMPORTACIÓN ---
 import CartNavigator from './navigation/CartNavigator'; // Importamos el Stack del Carrito
-
+import MapScreen from './screens/Mapa';
 const Tab = createBottomTabNavigator();
 const ProductStack = createNativeStackNavigator();
 
@@ -30,13 +30,7 @@ function HomeScreen() {
   );
 }
 
-function MapScreen() {
-  return (
-    <SafeAreaView style={styles.screen}>
-      <Text style={styles.screenText}>Aquí es Mapa</Text>
-    </SafeAreaView>
-  );
-}
+
 // --- FIN DE PANTALLAS PLACEHOLDER ---
 
 function ProductsStack() {
@@ -89,7 +83,8 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Inicio" component={HomeScreen} />
-      <Tab.Screen name="Mapa" component={MapScreen} />
+      <Tab.Screen name="Productos" component={ProductsScreen} />
+     <Tab.Screen name="Mapa" component={MapScreen} />
       
       {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
       {/* Ya no es 'CartScreen', ahora es el 'CartNavigator' */}

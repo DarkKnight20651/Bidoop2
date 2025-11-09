@@ -24,6 +24,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1bcaf113-05e3-44f8-80c0-1ce11e04ac87"
+      }
+    },
+    "owner": "adrian20651"
   }
 }
