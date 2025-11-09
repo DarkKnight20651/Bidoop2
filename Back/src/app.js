@@ -28,7 +28,7 @@ app.use(cors());
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
 // servir uploads
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use("/uploads", express.static("uploads"));
 
 // rutas
 app.use('/api/payments', paymentRoutes);

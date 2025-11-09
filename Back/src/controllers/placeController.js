@@ -6,13 +6,20 @@ import asyncHandler from 'express-async-handler';
 
 // Create place
 export const createPlace = asyncHandler(async (req, res) => {
-  const { name, description, coordinates, category } = req.body;
+  const { name, description, location, category } = req.body;
+
+  if (!location || !location.coordinates) {
+    res.status(400);
+    throw new Error("Debes enviar location.coordinates en el body");
+  }
+
   const place = new Place({
     name,
     description,
-    coordinates: { type: 'Point', coordinates },
+    location,
     category
   });
+
   await place.save();
   res.status(201).json(place);
 });

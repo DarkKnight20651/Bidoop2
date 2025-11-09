@@ -6,6 +6,7 @@ import {
   saveManualRoute,
   getUserRoutes
 } from '../controllers/routeController.js';
+import upload from '../config/multer.js';
 
 const router = express.Router();
 

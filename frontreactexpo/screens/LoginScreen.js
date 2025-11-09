@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 // Cambia esta URL si tu backend está en otra IP/puerto
-const API_URL = 'http://192.168.5.208:5000';
+const API_URL = 'http://192.168.5.146:5000';
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [email, setEmail] = useState('');

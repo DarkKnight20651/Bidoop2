@@ -2,7 +2,7 @@
 import asyncHandler from 'express-async-handler';
 import Place from '../models/Place.js';
 import RoutePlan from '../models/RoutePlan.js';
-
+import upload from '../config/multer.js';
 /**
  * Generador simple:
  * - recibe una ubicación (lng, lat) y un tipo de plan (full-day)
